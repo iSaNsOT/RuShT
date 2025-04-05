@@ -34,7 +34,7 @@ It's also possible to build and run directly with:
 cargo run
 ```
 
-To exit the shell:
+To quit:
 ```sh
 exit
 ```
