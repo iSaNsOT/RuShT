@@ -6,6 +6,7 @@ This is a basic shell made with Rust.
 - [x] Basic shell functionality
 - [x] Command execution
 - [x] Built-in commands (cd, exit)
+- [ ] Actual directory indicator (ex: /home/user>)
 - [ ] Background process execution
 - [x] Pipe support
 - [ ] Colours
@@ -21,3 +22,19 @@ This is a basic shell made with Rust.
 - [ ] Aliases
 - [ ] Scripting support
 - [ ] Job control
+
+## Usage
+Build the solution (executable) with:
+```sh
+cargo build
+```
+  
+It's also possible to build and run directly with:
+```sh
+cargo run
+```
+
+To exit the shell:
+```sh
+exit
+```
