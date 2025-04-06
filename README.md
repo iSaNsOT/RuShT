@@ -1,3 +1,5 @@
+[![dependency status](https://deps.rs/repo/github/iSaNsOT/RuSht/status.svg)](https://deps.rs/repo/github/iSaNsOT/RuSht)
+
 # RuShT
 
 This is a basic shell made with Rust.
