@@ -8,7 +8,7 @@ This is a basic shell made with Rust.
 - [x] Basic shell functionality
 - [x] Command execution
 - [x] Built-in commands (cd, exit)
-- [ ] Actual directory indicator (ex: /home/user>)
+- [x] Actual directory indicator (ex: /home/user>)
 - [ ] Background process execution
 - [x] Pipe support
 - [ ] Colours
