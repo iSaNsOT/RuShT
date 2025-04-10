@@ -9,7 +9,9 @@ This is a basic shell made with Rust.
 - [x] Command execution
 - [x] Built-in commands (cd, exit)
 - [x] Actual directory indicator (ex: /home/user>)
-- [ ] Background process execution
+- [x] Background process execution ``&``-> Could be improved
+- [x] Posibility to check the background processes (``jobs`` command)
+- [x] Posibility to kill the background processes (``kill <pid>`` command)
 - [x] Pipe support
 - [ ] Colours
 - [ ] ; implementation
