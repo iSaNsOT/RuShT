@@ -46,11 +46,11 @@ fn main() {
         let mut previous_stdout = None;
 
         while let Some(command) = commands.next() {
-            let mut parts = command.trim().split_whitespace();
+            let mut parts = command.split_whitespace();
             let mut command = parts.next().unwrap();
             let mut args: Vec<&str> = parts.collect();
 
-            let run_in_background = command.ends_with('&') || args.last().map_or(false, |&arg| arg == "&");
+            let run_in_background = command.ends_with('&') || args.last().is_some_and(|&arg| arg == "&");
             if run_in_background {
                 if command.ends_with('&') {
                     command = &command[..command.len() - 1];
@@ -61,7 +61,7 @@ fn main() {
 
             match command {
                 "cd" => {
-                    let new_dir = args.get(0).map_or("/", |&x| x);
+                    let new_dir = args.first().map_or("/", |&x| x);
                     let root = Path::new(new_dir);
                     if let Err(e) = std::env::set_current_dir(root) {
                         eprintln!("{}", format!("{}", e).red()); // Display errors in red
@@ -72,12 +72,12 @@ fn main() {
                 },
                 "exit" => return,
                 "jobs" => {
-                    for (pid, _) in &background_processes {
+                    for pid in background_processes.keys() {
                         println!("{}", format!("Background process running with PID: {}", pid).yellow());
                     }
                 },
                 "kill" => {
-                    if let Some(pid_str) = args.get(0) {
+                    if let Some(pid_str) = args.first() {
                         if let Ok(pid) = pid_str.parse::<u32>() {
                             if let Some(mut child) = background_processes.remove(&pid) {
                                 if let Err(e) = child.kill() {
@@ -98,7 +98,7 @@ fn main() {
                 command => {
                     let stdin = previous_stdout
                         .take()
-                        .map_or(Stdio::inherit(), |stdout| Stdio::from(stdout));
+                        .map_or(Stdio::inherit(), Stdio::from);
 
                     let stdout = if commands.peek().is_some() {
                         Stdio::piped()
