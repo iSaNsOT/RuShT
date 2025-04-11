@@ -21,11 +21,9 @@ This is a basic shell made with Rust.
 - [ ] Environment variable support
 - [ ] Command history
 - [ ] Error handling
-- [ ] Custom prompt
 - [ ] Tab completion
 - [ ] Aliases
 - [ ] Scripting support
-- [ ] Job control
 
 ## Usage
 Build the solution (executable) with:
