@@ -1,3 +1,4 @@
+use colored::*; // Import the colored crate
 use std::io::{stdin, stdout, Write};
 use std::path::Path;
 use std::process::{Command, Stdio, Child};
@@ -5,13 +6,16 @@ use std::env;
 use std::collections::HashMap;
 
 fn main() {
-    // Get the initial current working directory
     let mut current_dir = env::current_dir().unwrap_or_else(|_| Path::new("?").to_path_buf());
-    let mut background_processes: HashMap<u32, Child> = HashMap::new(); // Store background processes by PID
+    let mut background_processes: HashMap<u32, Child> = HashMap::new();
 
     loop {
         let current_dir_str = current_dir.to_str().unwrap_or("?");
-        print!("{} > ", current_dir_str);
+        print!(
+            "{} {} ",
+            current_dir_str.cyan().bold(), // Display the current path in cyan and bold
+            ">".green().bold() // Display the prompt symbol in green and bold
+        );
         stdout().flush().unwrap();
 
         let mut input = String::new();
@@ -25,13 +29,12 @@ fn main() {
             let mut command = parts.next().unwrap();
             let mut args: Vec<&str> = parts.collect();
 
-            // Check if the command should run in the background
             let run_in_background = command.ends_with('&') || args.last().map_or(false, |&arg| arg == "&");
             if run_in_background {
                 if command.ends_with('&') {
-                    command = &command[..command.len() - 1]; // Remove '&' from the command
+                    command = &command[..command.len() - 1];
                 } else {
-                    args.pop(); // Remove '&' from the arguments
+                    args.pop();
                 }
             }
 
@@ -40,7 +43,7 @@ fn main() {
                     let new_dir = args.get(0).map_or("/", |&x| x);
                     let root = Path::new(new_dir);
                     if let Err(e) = std::env::set_current_dir(root) {
-                        eprintln!("{}", e);
+                        eprintln!("{}", format!("{}", e).red()); // Display errors in red
                     } else {
                         current_dir = env::current_dir().unwrap_or_else(|_| Path::new("?").to_path_buf());
                     }
@@ -48,29 +51,27 @@ fn main() {
                 },
                 "exit" => return,
                 "jobs" => {
-                    // List all background processes
                     for (pid, _) in &background_processes {
-                        println!("Background process running with PID: {}", pid);
+                        println!("{}", format!("Background process running with PID: {}", pid).yellow());
                     }
                 },
                 "kill" => {
-                    // Kill a background process by PID
                     if let Some(pid_str) = args.get(0) {
                         if let Ok(pid) = pid_str.parse::<u32>() {
                             if let Some(mut child) = background_processes.remove(&pid) {
                                 if let Err(e) = child.kill() {
-                                    eprintln!("Failed to kill process {}: {}", pid, e);
+                                    eprintln!("{}", format!("Failed to kill process {}: {}", pid, e).red());
                                 } else {
-                                    println!("Process {} terminated", pid);
+                                    println!("{}", format!("Process {} terminated", pid).green());
                                 }
                             } else {
-                                eprintln!("No background process found with PID: {}", pid);
+                                eprintln!("{}", format!("No background process found with PID: {}", pid).red());
                             }
                         } else {
-                            eprintln!("Invalid PID: {}", pid_str);
+                            eprintln!("{}", format!("Invalid PID: {}", pid_str).red());
                         }
                     } else {
-                        eprintln!("Usage: kill <PID>");
+                        eprintln!("{}", "Usage: kill <PID>".red());
                     }
                 },
                 command => {
@@ -94,8 +95,8 @@ fn main() {
                         Ok(mut child) => {
                             if run_in_background {
                                 let pid = child.id();
-                                println!("Process running in background with PID: {}", pid);
-                                background_processes.insert(pid, child); // Store the child process
+                                println!("{}", format!("Process running in background with PID: {}", pid).green());
+                                background_processes.insert(pid, child);
                             } else {
                                 child.wait().unwrap();
                                 previous_stdout = child.stdout.take();
@@ -103,7 +104,7 @@ fn main() {
                         }
                         Err(e) => {
                             previous_stdout = None;
-                            eprintln!("Error: {}", e);
+                            eprintln!("{}", format!("Error: {}", e).red());
                         }
                     };
                 }

@@ -13,7 +13,7 @@ This is a basic shell made with Rust.
 - [x] Posibility to check the background processes (``jobs`` command)
 - [x] Posibility to kill the background processes (``kill <pid>`` command)
 - [x] Pipe support
-- [ ] Colours
+- [x] Colours 🌈
 - [ ] ; implementation
 - [ ] || and && implementation
 - [ ] Input/output redirection
