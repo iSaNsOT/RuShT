@@ -14,14 +14,15 @@ This is a basic shell made with Rust.
 - [x] Posibility to kill the background processes (``kill <pid>`` command)
 - [x] Pipe support
 - [x] Colours 🌈
+- [ ] Tab completion
 - [ ] ; implementation
 - [ ] || and && implementation
 - [ ] Input/output redirection
 - [ ] Signal handling
 - [ ] Environment variable support
-- [ ] Command history
+- [x] Command history
+- [x] Arrow functions (Up / Down for history) (Right / Left for command editing)
 - [ ] Error handling
-- [ ] Tab completion
 - [ ] Aliases
 - [ ] Scripting support
 

@@ -1,5 +1,6 @@
 use colored::*; // Import the colored crate
-use std::io::{stdin, stdout, Write};
+use rustyline::{Editor, Config}; // Import rustyline for command history and navigation
+use rustyline::error::ReadlineError;
 use std::path::Path;
 use std::process::{Command, Stdio, Child};
 use std::env;
@@ -9,17 +10,37 @@ fn main() {
     let mut current_dir = env::current_dir().unwrap_or_else(|_| Path::new("?").to_path_buf());
     let mut background_processes: HashMap<u32, Child> = HashMap::new();
 
+    // Create a rustyline Editor with default configuration
+    let config = Config::builder().build();
+    let mut rl = Editor::<(), rustyline::history::MemHistory>::with_history(config, rustyline::history::MemHistory::default()).expect("Failed to create Editor");
+
     loop {
         let current_dir_str = current_dir.to_str().unwrap_or("?");
-        print!(
+        let prompt = format!(
             "{} {} ",
             current_dir_str.cyan().bold(), // Display the current path in cyan and bold
             ">".green().bold() // Display the prompt symbol in green and bold
         );
-        stdout().flush().unwrap();
 
-        let mut input = String::new();
-        stdin().read_line(&mut input).unwrap();
+        // Read input using rustyline
+        let input = match rl.readline(&prompt) {
+            Ok(line) => {
+                rl.add_history_entry(line.as_str()).unwrap();
+                line
+            }
+            Err(ReadlineError::Interrupted) => {
+                println!("{}", "CTRL+C pressed. Exiting shell...".yellow());
+                break;
+            }
+            Err(ReadlineError::Eof) => {
+                println!("{}", "CTRL+D pressed. Exiting shell...".yellow());
+                break;
+            }
+            Err(err) => {
+                eprintln!("{}", format!("Error reading line: {}", err).red());
+                break;
+            }
+        };
 
         let mut commands = input.trim().split('|').peekable();
         let mut previous_stdout = None;
