@@ -1,5 +1,6 @@
-use colored::*; // Import the colored crate
-use rustyline::{Editor, Config}; // Import rustyline for command history and navigation
+#![warn(clippy::all, clippy::pedantic)]
+use colored::*;
+use rustyline::{Editor, Config};
 use rustyline::error::ReadlineError;
 use std::path::Path;
 use std::process::{Command, Stdio, Child};
@@ -18,8 +19,8 @@ fn main() {
         let current_dir_str = current_dir.to_str().unwrap_or("?");
         let prompt = format!(
             "{} {} ",
-            current_dir_str.cyan().bold(), // Display the current path in cyan and bold
-            ">".green().bold() // Display the prompt symbol in green and bold
+            current_dir_str.cyan().bold(),
+            ">".green().bold()
         );
 
         // Read input using rustyline
@@ -64,7 +65,7 @@ fn main() {
                     let new_dir = args.first().map_or("/", |&x| x);
                     let root = Path::new(new_dir);
                     if let Err(e) = std::env::set_current_dir(root) {
-                        eprintln!("{}", format!("{}", e).red()); // Display errors in red
+                        eprintln!("{}", format!("{}", e).red());
                     } else {
                         current_dir = env::current_dir().unwrap_or_else(|_| Path::new("?").to_path_buf());
                     }
